@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowRight, Shield, Zap, BarChart3, CreditCard, Users, Globe } from 'lucide-react';
+import { LoginModal } from '@/components/login-modal';
+import { RegisterModal } from '@/components/register-modal';
+import { Button } from '@/components/ui/button';
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [showRegisterModal, setShowRegisterModal] = useState(false);
+
+    const handleSwitchToRegister = () => {
+        setShowLoginModal(false);
+        setShowRegisterModal(true);
+    };
+
+    const handleSwitchToLogin = () => {
+        setShowRegisterModal(false);
+        setShowLoginModal(true);
+    };
 
     return (
         <>
@@ -38,19 +53,20 @@ export default function Welcome() {
                                     </Link>
                                 ) : (
                                     <>
-                                        <Link
-                                            href={route('login')}
+                                        <Button
+                                            variant="ghost"
+                                            onClick={() => setShowLoginModal(true)}
                                             className="px-4 py-2 text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 dark:text-gray-300 dark:hover:text-blue-400"
                                         >
                                             Log in
-                                        </Link>
-                                        <Link
-                                            href={route('register')}
+                                        </Button>
+                                        <Button
+                                            onClick={() => setShowRegisterModal(true)}
                                             className="inline-flex items-center px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
                                         >
                                             Get Started
                                             <ArrowRight className="ml-2 w-4 h-4" />
-                                        </Link>
+                                        </Button>
                                     </>
                                 )}
                             </nav>
@@ -76,19 +92,22 @@ export default function Welcome() {
                         
                         {!auth.user && (
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Link
-                                    href={route('register')}
+                                <Button
+                                    onClick={() => setShowRegisterModal(true)}
+                                    size="lg"
                                     className="inline-flex items-center px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200 text-lg"
                                 >
                                     Start Free Trial
                                     <ArrowRight className="ml-2 w-5 h-5" />
-                                </Link>
-                                <Link
-                                    href={route('login')}
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    onClick={() => setShowLoginModal(true)}
                                     className="inline-flex items-center px-8 py-3 border-2 border-gray-300 hover:border-blue-600 text-gray-700 hover:text-blue-600 font-semibold rounded-lg transition-colors duration-200 text-lg dark:border-gray-600 dark:text-gray-300 dark:hover:border-blue-400 dark:hover:text-blue-400"
                                 >
                                     Sign In
-                                </Link>
+                                </Button>
                             </div>
                         )}
                     </div>
@@ -222,16 +241,29 @@ export default function Welcome() {
                             <p className="text-xl mb-8 text-blue-100">
                                 Join thousands of businesses already using Payment Gateway Hub
                             </p>
-                            <Link
-                                href={route('register')}
+                            <Button
+                                onClick={() => setShowRegisterModal(true)}
+                                size="lg"
                                 className="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors duration-200 text-lg"
                             >
                                 Create Your Account
                                 <ArrowRight className="ml-2 w-5 h-5" />
-                            </Link>
+                            </Button>
                         </div>
                     )}
                 </main>
+
+                {/* Modals */}
+                <LoginModal
+                    isOpen={showLoginModal}
+                    onClose={() => setShowLoginModal(false)}
+                    onSwitchToRegister={handleSwitchToRegister}
+                />
+                <RegisterModal
+                    isOpen={showRegisterModal}
+                    onClose={() => setShowRegisterModal(false)}
+                    onSwitchToLogin={handleSwitchToLogin}
+                />
 
                 {/* Footer */}
                 <footer className="bg-gray-50 border-t border-gray-200 py-12 dark:bg-slate-800 dark:border-slate-700">
