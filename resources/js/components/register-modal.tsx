@@ -28,7 +28,6 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModa
         e.preventDefault();
         post(route('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
-            onSuccess: () => onClose(),
         });
     };
 

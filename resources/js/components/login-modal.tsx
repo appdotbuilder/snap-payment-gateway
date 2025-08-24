@@ -36,7 +36,6 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalPr
         e.preventDefault();
         post(route('login'), {
             onFinish: () => reset('password'),
-            onSuccess: () => onClose(),
         });
     };
 
