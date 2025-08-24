@@ -17,6 +17,7 @@ interface LoginModalProps {
 export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalProps) {
     const [showPassword, setShowPassword] = useState(false);
     const [showForgotPassword, setShowForgotPassword] = useState(false);
+    const [loginError, setLoginError] = useState<string | null>(null);
 
     const { data, setData, post, processing, errors, reset } = useForm<{
         email: string;
@@ -34,8 +35,15 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalPr
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        setLoginError(null); // Clear any previous errors
         post(route('login'), {
             onFinish: () => reset('password'),
+            onError: (errors) => {
+                // Set generic login error if authentication fails
+                if (errors.email || errors.password) {
+                    setLoginError('Invalid email or password. Please try again.');
+                }
+            }
         });
     };
 
@@ -52,6 +60,7 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalPr
     const handleClose = () => {
         reset();
         setShowForgotPassword(false);
+        setLoginError(null);
         onClose();
     };
 
@@ -121,6 +130,11 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalPr
                     </form>
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        {loginError && (
+                            <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-800 text-sm">
+                                {loginError}
+                            </div>
+                        )}
                         <div className="space-y-2">
                             <Label htmlFor="email" className="text-sm font-medium">
                                 Email Address

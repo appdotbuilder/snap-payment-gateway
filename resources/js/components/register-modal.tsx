@@ -16,6 +16,7 @@ interface RegisterModalProps {
 export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps) {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [registerError, setRegisterError] = useState<string | null>(null);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
@@ -26,13 +27,21 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModa
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        setRegisterError(null); // Clear any previous errors
         post(route('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
+            onError: (errors) => {
+                // Set generic registration error if there are general issues
+                if (Object.keys(errors).length > 0 && !errors.name && !errors.email && !errors.password && !errors.password_confirmation) {
+                    setRegisterError('Registration failed. Please try again.');
+                }
+            }
         });
     };
 
     const handleClose = () => {
         reset();
+        setRegisterError(null);
         onClose();
     };
 
@@ -59,6 +68,11 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModa
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {registerError && (
+                        <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-800 text-sm">
+                            {registerError}
+                        </div>
+                    )}
                     <div className="space-y-2">
                         <Label htmlFor="name" className="text-sm font-medium">
                             Full Name
