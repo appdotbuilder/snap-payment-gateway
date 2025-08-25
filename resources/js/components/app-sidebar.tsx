@@ -13,7 +13,8 @@ import {
     BarChart3, 
     Settings, 
     BookOpen,
-    CreditCard
+    CreditCard,
+    Mail
 } from 'lucide-react';
 
 
@@ -45,8 +46,30 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Settings',
-        href: '/settings',
+        href: '/settings/profile', // Default to profile if settings is clicked directly
         icon: Settings,
+        children: [ // Add children for submenu
+            {
+                title: 'Profile',
+                href: '/settings/profile',
+                icon: null,
+            },
+            {
+                title: 'Password',
+                href: '/settings/password',
+                icon: null,
+            },
+            {
+                title: 'Appearance',
+                href: '/settings/appearance',
+                icon: null,
+            },
+            {
+                title: 'Email Settings', // New submenu item
+                href: '/settings/email',
+                icon: Mail, // Assign Mail icon
+            },
+        ],
     },
     {
         title: 'Documentation',

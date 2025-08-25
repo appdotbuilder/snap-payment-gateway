@@ -1,4 +1,4 @@
-import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 
@@ -21,6 +21,24 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                 <span className="font-medium">{item.title}</span>
                             </Link>
                         </SidebarMenuButton>
+                        {item.children && (
+                            <SidebarMenuSub>
+                                {item.children.map((subItem) => (
+                                    <SidebarMenuSubItem key={subItem.title}>
+                                        <SidebarMenuSubButton
+                                            asChild
+                                            isActive={page.url.startsWith(subItem.href)}
+                                            className="text-neutral-600 hover:text-neutral-800 dark:text-neutral-300 dark:hover:text-neutral-100"
+                                        >
+                                            <Link href={subItem.href} prefetch>
+                                                {subItem.icon && <subItem.icon className="w-3 h-3 mr-1" />} {/* Smaller icon for submenu */}
+                                                <span>{subItem.title}</span>
+                                            </Link>
+                                        </SidebarMenuSubButton>
+                                    </SidebarMenuSubItem>
+                                ))}
+                            </SidebarMenuSub>
+                        )}
                     </SidebarMenuItem>
                 ))}
             </SidebarMenu>
